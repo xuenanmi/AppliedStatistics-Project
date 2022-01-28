@@ -1,0 +1,194 @@
+---
+title: "Week 1 - Homework"
+author: "STAT 420, Summer 2020, Xuenan Mi"
+date: ''
+output:
+  html_document: 
+    theme: readable
+    toc: yes  
+  pdf_document: default
+urlcolor: cyan
+---
+## Exercise 1 (Subsetting and Statistics)
+**(a)**
+```{r}
+library(ggplot2)
+```
+
+**(b)**
+```{r}
+data('msleep')
+dim(msleep)
+```
+There are 83 observations and 11 variables in the dataset.
+The msleep is a dataset about descriptive variables for a set of mammals, including mammals' name, genus, vore, taxonomic rank,	the conservation status of the mammal, total amount of sleep, amount of rem sleep, length of sleep cycle, awake time, brain weight, body weight.
+
+**(c)**
+```{r}
+mean(msleep$sleep_rem,na.rm = T)
+```
+The mean hours of REM sleep of individuals is 1.87451
+
+**(d)**
+```{r}
+sd(msleep$brainwt,na.rm = T)
+```
+The standard deviation of brain weight of individuals is 0.9764137
+
+**(e)**
+```{r}
+msleep$name[which.max(msleep$sleep_rem)]
+```
+Thick-tailed opposum has the most REM sleep.
+
+**(f)**
+```{r}
+mean(subset(msleep,vore=='carni')$bodywt, na.rm = T)
+```
+The average bodyweight of carnivores in the dataset is 90.75111.
+
+## Exercise 2 (Plotting)
+
+**(a)**
+```{r}
+library(MASS)
+data('birthwt')
+dim(birthwt)
+```
+There are 189 observations and 10 variables in the dataset.
+The birthwt dataset was collected at Baystate Medical Center, which is used for investigate the risk factors associated low infant birth weight. There are 10 variables for 189 observations, variables include the indicator of birth weight less than 2.5kg, mother's age, mother's weight at last menstrual period, mother's race, smoking status, number of previous premature labours, history of hypertension, number of physician visits during the first trimester and birth weight.
+
+**(b)**
+```{r}
+plot(bwt ~ lwt, data = birthwt,col = 'red',xlab = "mother's weight before pregnancy (pounds)", ylab = "birth weight of child (grams)", main = "Birth Weight vs Mother's weight")
+```
+
+There is no very obvious relationship between these two variables. It seems heavier mother has heavier child. 
+
+
+**(c)**
+```{r}
+plot(bwt ~ age, data = birthwt,col = 'blue', ylab = "birth weight of child (grams)", xlab = "mother's age", main = "Birth Weight vs Mother's Age")
+```
+
+There is a decreasing trend of birth weight as mother's age increases, which means older mothers trend to have lighter children. But we notice it seems there is a outlier in the data, 45-year-old mother has a very heavy child.
+
+
+**(d)**
+```{r}
+boxplot(bwt ~ smoke, data = birthwt, col= 'green', main = 'Birth Weight vs Smoking',xlab = 'smoking status (0 = No, 1= Yes)', ylab = 'birth weight of child (grams)')
+```
+
+Based on the boxplot, mothers who smoked trend to have lighter child on average than mothers who don't smoke.
+
+
+
+## Exercise 3 (Importing Data, More Plotting)
+
+**(a)**
+```{r}
+setwd("/Users/Xuenan/Documents/UIUC/2020Summer/Stat420/week1/w01-hw-assign-su20")
+df<-read.csv("nutrition-2018.csv",h=T)
+hist(df$Calories, col= 'blue', main="Histogram of Calories ", xlab = "Calories (kcal)")
+```
+
+The histogram display right-skewed shape.
+There are two unusual peak, one is about 400 kcal and one is 900 kcal. It seems there is upper bound for calories, though the calories is over 900, but they still count them as 900 cal. And some food are rounded to 400 kcal.
+
+**(b)**
+```{r}
+plot(Calories ~ Protein, data= df, col = 'blue',cex = 0.5, ylab = 'Calories (kcal)', xlab = 'Protein (grams)', main = 'Calories vs Protein')
+```
+
+With the protein increases, the average calories increases and variation of calories decreases.
+The protein content may be a useful predictor for calories, but we still need other variables for predicting calories.
+
+**(c)**
+```{r}
+plot(Calories ~ I(4 * Protein + 4 * Carbs + 9 * Fat), data= df,col = 'blue',cex =0.4, xlab = "protein + carbonhydrates + fat (grams)", ylab = "Calories (kcal)", main = "Calories vs protein + carbs + fat")
+```
+
+It is not a straight line.
+The possible reasons:
+Except protein, carbonhydrates and fat, other components can also contribute to the calories of food. And there may be some measurement error for these values. 
+
+
+## Exercise 4 (Writing and Using Functions)
+
+**(a)**
+```{r}
+a = 1:10
+b = 10:1
+c = rep(1, times = 10)
+d = 2 ^ (1:10)
+
+sum_of_squares = function(x){
+  sum(x**2)
+} 
+
+sum_of_squares(x = a)
+sum_of_squares(x = c(c, d))
+```
+
+
+**(b)**
+```{r}
+sqrt(1/length(d)*(sum_of_squares(d-0)))
+```
+
+**(c)**
+```{r}
+sqrt(1/length(a-b)*sum_of_squares(a-b))
+```
+
+
+## Exercise 5 (More Writing and Using Functions)
+
+**(a)**
+```{r}
+set.seed(42)
+x = 1:100
+y = rnorm(1000)
+z = runif(150, min = 0, max = 1)
+
+list_extreme_values = function (x,k=2){
+  list (
+    small = x[x < mean(x) - k*sd(x)],
+    large = x[x > mean(x) + k*sd(x)]
+  )
+}
+
+list_extreme_values(x = x, k = 1)
+list_extreme_values(x = y, k = 3)
+list_extreme_values(x = y, k = 2)
+list_extreme_values(x = z, k = 1.5)
+```
+
+**(b)**
+```{r}
+mean(list_extreme_values(x = y, k = 1.5)$large)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
